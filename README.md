@@ -758,51 +758,31 @@ Após a execução dos playbooks, o ambiente fica totalmente operacional.
 
 ## Terraform
 
-> 📷 **Adicionar imagem**
-
-```
-docs/images/terraform-apply.png
-```
+![Terraform Apply](docs/images/terraform-apply.png)
 
 ---
 
-## Playbook Ansible
+## Ansible
 
-> 📷 **Adicionar imagem**
-
-```
-docs/images/ansible-playbook.png
-```
+![Ansible Playbook](docs/images/ansible-playbook.png)
 
 ---
 
 ## Docker
 
-> 📷 **Adicionar imagem**
-
-```
-docs/images/docker-ps.png
-```
+![Docker PS](docs/images/docker-ps.png)
 
 ---
 
 ## WordPress
 
-> 📷 **Adicionar imagem**
-
-```
-docs/images/wordpress-home.png
-```
+![WordPress](docs/images/wordpress-home.png)
 
 ---
 
 ## HTTPS
 
-> 📷 **Adicionar imagem**
-
-```
-docs/images/ssl-certificate.png
-```
+![HTTPS](docs/images/ssl-certificate.png)
 
 ---
 
