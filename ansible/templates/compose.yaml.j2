@@ -1,0 +1,62 @@
+services:
+  database:
+    image: {{ database_image }}
+    container_name: {{ database_container_name }}
+    restart: unless-stopped
+
+    environment:
+      MARIADB_DATABASE: ${MYSQL_DATABASE}
+      MARIADB_USER: ${MYSQL_USER}
+      MARIADB_PASSWORD: ${MYSQL_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+
+    volumes:
+      - database_data:/var/lib/mysql
+
+    networks:
+      - wordpress_network
+
+    healthcheck:
+      test:
+        - CMD
+        - healthcheck.sh
+        - --connect
+        - --innodb_initialized
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  wordpress:
+    image: {{ wordpress_image }}
+    container_name: {{ wordpress_container_name }}
+    restart: unless-stopped
+
+    depends_on:
+      database:
+        condition: service_healthy
+
+    environment:
+      WORDPRESS_DB_HOST: database:3306
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
+      WORDPRESS_DB_USER: ${MYSQL_USER}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
+      WORDPRESS_CONFIG_EXTRA: |
+       define('WP_HOME', 'https://{{ wordpress_domain }}');
+       define('WP_SITEURL', 'https://{{ wordpress_domain }}');
+
+    ports:
+      - "{{ wordpress_local_address }}:{{ wordpress_local_port }}:80"
+
+    volumes:
+      - wordpress_data:/var/www/html
+
+    networks:
+      - wordpress_network
+
+volumes:
+  database_data:
+  wordpress_data:
+
+networks:
+  wordpress_network:
+    driver: bridge

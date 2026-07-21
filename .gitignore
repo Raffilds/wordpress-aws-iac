@@ -1,0 +1,56 @@
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform.lock.hcl.backup
+
+# Variáveis sensíveis
+terraform.tfvars
+*.auto.tfvars
+*.auto.tfvars.json
+
+# Ansible Vault e inventário gerado
+ansible/group_vars/wordpress/vault.yml
+ansible/inventory/hosts.ini
+*.vault-password
+.vault_pass
+
+# Chaves
+*.pem
+*.key
+*.pub
+id_rsa
+id_ed25519
+
+# Ambientes
+.env
+.env.*
+!.env.example
+
+# Backups e dumps
+*.sql
+*.sql.gz
+*.tar
+*.tar.gz
+*.zip
+*.bak
+
+# WordPress gerado ou migrado
+wp-content/uploads/
+wp-content/cache/
+wp-content/upgrade/
+
+# Editor e sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

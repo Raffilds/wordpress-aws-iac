@@ -1,0 +1,24 @@
+---
+project_name: wordpress
+
+wordpress_domain: testesite.amee.com.br
+wordpress_directory: /home/ubuntu/wordpress
+
+wordpress_container_name: wordpress-app
+database_container_name: wordpress-database
+
+wordpress_image: wordpress:7.0-php8.3-apache
+database_image: mariadb:11.4
+
+wordpress_local_address: 127.0.0.1
+wordpress_local_port: 8080
+
+mysql_database: wordpress
+mysql_user: wordpress
+
+mysql_password: "{{ vault_mysql_password }}"
+mysql_root_password: "{{ vault_mysql_root_password }}"
+
+certbot_email: "{{ vault_certbot_email }}"
+
+nginx_site_name: testesite.amee.com.br

@@ -1,0 +1,4 @@
+---
+vault_mysql_password: "ALTERE_AQUI"
+vault_mysql_root_password: "ALTERE_AQUI"
+vault_certbot_email: "seu-email@dominio.com"
