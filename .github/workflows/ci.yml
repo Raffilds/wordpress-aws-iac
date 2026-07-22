@@ -1,0 +1,89 @@
+name: CI - Terraform e Ansible
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "terraform/**"
+      - "ansible/**"
+      - ".github/workflows/**"
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "terraform/**"
+      - "ansible/**"
+      - ".github/workflows/**"
+
+permissions:
+  contents: read
+
+jobs:
+  terraform:
+    name: Validar Terraform
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: terraform
+
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v4
+
+      - name: Instalar Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Verificar formatação
+        run: terraform fmt -check -recursive
+
+      - name: Inicializar Terraform sem backend
+        run: terraform init -backend=false
+
+      - name: Validar Terraform
+        run: terraform validate
+
+  ansible:
+    name: Validar Ansible
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ansible
+
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v4
+
+      - name: Instalar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar Ansible
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible ansible-lint
+
+      - name: Mostrar versões
+        run: |
+          ansible --version
+          ansible-lint --version
+
+      - name: Validar inventário
+        run: ansible-inventory -i inventory/ci.ini --graph
+
+      - name: Validar sintaxe do playbook
+        run: ansible-playbook -i inventory/ci.ini --syntax-check playbooks/site.yml
+
+      - name: Executar Ansible Lint
+        run: ansible-lint playbooks/site.yml
+
+
+      - name: Validar sintaxe do playbook
+        run: ansible-playbook --syntax-check playbooks/site.yml
+
+      - name: Executar Ansible Lint
+        run: ansible-lint playbooks/site.yml
