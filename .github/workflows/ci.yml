@@ -19,11 +19,15 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   terraform:
     name: Validar Terraform
     runs-on: ubuntu-latest
+
+    env:
+      TF_VAR_ssh_allowed_cidrs: ${{ vars.TF_VAR_SSH_ALLOWED_CIDRS }}
 
     defaults:
       run:
@@ -33,14 +37,23 @@ jobs:
       - name: Baixar repositório
         uses: actions/checkout@v4
 
+      - name: Autenticar na AWS via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: us-east-2
+
       - name: Instalar Terraform
         uses: hashicorp/setup-terraform@v3
 
       - name: Verificar formatação
         run: terraform fmt -check -recursive
 
-      - name: Inicializar Terraform sem backend
-        run: terraform init -backend=false
+      - name: Inicializar Terraform
+        run: |
+          terraform init \
+            -backend-config="bucket=rafael-terraform-state-980760664566" \
+            -backend-config="region=us-east-2"
 
       - name: Validar Terraform
         run: terraform validate
@@ -75,15 +88,9 @@ jobs:
       - name: Validar inventário
         run: ansible-inventory -i inventory/ci.ini --graph
 
+
       - name: Validar sintaxe do playbook
         run: ansible-playbook -i inventory/ci.ini --syntax-check playbooks/site.yml
-
-      - name: Executar Ansible Lint
-        run: ansible-lint playbooks/site.yml
-
-
-      - name: Validar sintaxe do playbook
-        run: ansible-playbook --syntax-check playbooks/site.yml
 
       - name: Executar Ansible Lint
         run: ansible-lint playbooks/site.yml
